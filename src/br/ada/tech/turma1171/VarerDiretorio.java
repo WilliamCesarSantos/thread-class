@@ -4,8 +4,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class VarerDiretorio {
+
+    public static List<String> diretorios = new CopyOnWriteArrayList<>();
 
     public static void main(String[] args) throws InterruptedException {
         // thread -> src -> br -> ada -> tech -> turma1171 -> Calcular.java, ContaBancaria.java
@@ -15,7 +19,8 @@ public class VarerDiretorio {
         // uma nova thread para varrer os arquivos existentes
         var path = Paths.get(".");
         varrer(path);
-        Thread.sleep(10);
+//        Thread.sleep(10);
+        System.out.println("Main - Finalizando a aplicação");
     }
 
     public static void varrer(Path path) {
@@ -26,6 +31,7 @@ public class VarerDiretorio {
         var thread = new Thread(() -> {
             try {
                 Files.list(path)
+                        .peek(subPath -> diretorios.add(subPath.toAbsolutePath().toString()))
                         .forEach(subPath -> {
                             System.out.println("Thread " + Thread.currentThread().getName()
                                     + ". " + subPath.toAbsolutePath());
@@ -33,11 +39,16 @@ public class VarerDiretorio {
                                 varrer(subPath);
                             }
                         });
+
+                diretorios.forEach(it -> it.equalsIgnoreCase("a"));
+
+                var threadName = Thread.currentThread().getName();
+                System.out.println(threadName + " - Finalizando thread");
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
-        thread.setDaemon(true);
+//        thread.setDaemon(true);
         thread.start();
     }
 

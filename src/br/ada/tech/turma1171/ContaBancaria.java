@@ -6,7 +6,9 @@ public class ContaBancaria {
 
     public static void main(String[] args) throws InterruptedException {
         var thread1 = new Thread(() -> {
-            saldo -= 10;
+            var saldoAtual = saldo;
+            saldoAtual = saldoAtual - 10;
+            saldo = saldoAtual;
         });
 
         var thread2 = new Thread(() -> {
