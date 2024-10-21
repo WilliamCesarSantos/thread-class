@@ -1,4 +1,4 @@
-package br.ada.tech.turma1171;
+package br.ada.tech.turma1171.example;
 
 import java.math.BigDecimal;
 import java.util.Random;

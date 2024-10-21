@@ -1,4 +1,4 @@
-package br.ada.tech.turma1171;
+package br.ada.tech.turma1171.example;
 
 import java.io.IOException;
 import java.nio.file.Files;

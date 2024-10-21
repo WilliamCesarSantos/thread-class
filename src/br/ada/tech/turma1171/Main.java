@@ -1,45 +1,20 @@
 package br.ada.tech.turma1171;
 
-import java.time.LocalDateTime;
+import br.ada.tech.turma1171.model.Customer;
+import br.ada.tech.turma1171.repository.txt.impl.CustomerRepositoryImpl;
+import br.ada.tech.turma1171.service.batch.impl.CsvCustomerImportBatchImpl;
+import br.ada.tech.turma1171.service.batch.impl.CsvCustomerLoader;
 
 public class Main {
 
-    public static void main(String[] args) throws InterruptedException {
-        System.out.println("Olá mundo");
+    public static void main(String[] args) {
+        var repository = new CustomerRepositoryImpl("database");
 
-        final int index = 100;
-
-        var thread1 = new Thread(() -> {
-            for (int i = 0; i < index; i++) {
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                }
-                System.out.println("Olá mundo");
-            }
-        });
-        thread1.setName("Thread 1");
-
-        var thread2 = new Thread(() -> {
-            for (int i = 0; i < index; i++) {
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                }
-                System.out.println("Hello world");
-            }
-        });
-        thread2.setName("Thread 2");
-
-        thread1.start();
-        thread2.start();
-
-        System.out.println(LocalDateTime.now()+": aguardando thread 1");
-        thread1.join();
-        System.out.println(LocalDateTime.now()+": aguardando thread 2");
-        thread2.join();
-        System.out.println(LocalDateTime.now()+": finalizado");
+        var service = new CsvCustomerImportBatchImpl(
+                repository,
+                new CsvCustomerLoader(),
+                "integration"
+        );
+        service.process();
     }
-
 }
-
