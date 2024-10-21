@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -49,6 +50,7 @@ public class CustomerRepositoryImpl
                 customer.setId(lastId);
             }
         }
+        System.out.println(LocalDateTime.now()+": Registrando cliente "+customer.getName());
         super.write(
                 customer.getId() + extension,
                 customer
@@ -83,14 +85,14 @@ public class CustomerRepositoryImpl
 
     private void discoveryLastId() {
         try {
-            var path = Paths.get(rootFolder);
-            var lastId = Files.list(path)
-                    .map(subPath -> subPath.getFileName().toString())
-                    .filter(fileName -> fileName.endsWith(extension))
-                    .map(fileName -> Long.valueOf(fileName.split("\\.")[0]))
-                    .reduce((first, second) -> first > second ? first : second)
-                    .orElse(0l);
             synchronized (CustomerRepositoryImpl.lastId) {
+                var path = Paths.get(rootFolder);
+                var lastId = Files.list(path)
+                        .map(subPath -> subPath.getFileName().toString())
+                        .filter(fileName -> fileName.endsWith(extension))
+                        .map(fileName -> Long.valueOf(fileName.split("\\.")[0]))
+                        .reduce((first, second) -> first > second ? first : second)
+                        .orElse(0l);
                 CustomerRepositoryImpl.lastId = lastId;
             }
         } catch (IOException exception) {

@@ -28,7 +28,7 @@ public class CsvCustomerLoader {
     private Optional<Customer> convert(String text) {
         Customer customer = null;
         var values = text.split(",");
-        if (values.length < 3) {
+        if (values.length == 3) {
             var id = Long.valueOf(values[0]);
             var name = values[1];
             var birtDate = LocalDate.parse(values[2]);

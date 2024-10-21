@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
 import java.util.stream.Stream;
 
 public class CsvCustomerImportBatchImpl implements CustomerImportBatch {
@@ -29,13 +30,18 @@ public class CsvCustomerImportBatchImpl implements CustomerImportBatch {
 
     @Override
     public void process() {
+        System.out.println(LocalDateTime.now() + ": Executando integração de usuários");
         filesToProcess()
                 .forEach(file -> {
                     loader.load(file)
                             .parallelStream()
-                            .filter(customer ->
-                                    !repository.findById(customer.getId()).isPresent()
-                            ).forEach(repository::save);
+                            .filter(customer -> {
+                                var exists = repository.findById(customer.getId()).isPresent();
+                                if (exists) {
+                                    System.out.println("Discartando usuário " + customer.getName() + ", pois já existe na base de dados");
+                                }
+                                return !exists;
+                            }).forEach(repository::save);
                     markAsProcessed(file);
                 });
     }
